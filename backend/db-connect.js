@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const PASSWORD = process.env.PASS
 const UserData = require('./schemas/userDataSchema')
 const UserRegisterModel = require('./schemas/userRegisterSchema');
-
-const url = `mongodb+srv://dbUser:hasanwasbad@globomantics.wsycduk.mongodb.net/?retryWrites=true&w=majority`
+const password = process.env.USER_PASSWORD
+const url = `mongodb+srv://dbUser:${password}@globomantics.wsycduk.mongodb.net/?retryWrites=true&w=majority`
 
 const connectDB = async () => {
     try{
