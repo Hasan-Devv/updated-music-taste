@@ -40,9 +40,10 @@ UserDataRouter.route('/').post(async (req, res) => {
             
         })
         
-        res.status(200).json({message: "User Data saved succesfully", popularity })
+        res.status(200).json({message: "User Data saved succesfully", popularity, userData})
 
         console.log(popularity)
+       
 
     } catch (e) {
         console.error("Error saving data, " , e.message)

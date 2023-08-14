@@ -2,6 +2,7 @@ const express = require('express');
 const userRegisterRouter = express.Router();
 const UserRegisterModel = require('../schemas/userRegisterSchema')
 const bcyrpt = require('bcrypt')
+const Joi = require('joi')
 // const users = require('../db-connect')
 // const mongoose = require('mongoose')
 
@@ -16,10 +17,26 @@ const bcyrpt = require('bcrypt')
     
 // }
 
+const validationSchema = Joi.object({
+    username: Joi.string().alphanum().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(4).pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
+})
+
+
 userRegisterRouter.route('/').post(async (req, res) => {
     try {
 
         const {username, email, password } = req.body;
+
+        const enteredData = {
+            username: username,
+            email: email,
+            password: password
+        }
+
+        const {error, value} = validationSchema.validate(enteredData)
+
 
         const hashedPassword = await bcyrpt.hash(password, 10);
         const user = new UserRegisterModel({
@@ -36,7 +53,11 @@ userRegisterRouter.route('/').post(async (req, res) => {
         
         if(userExists){
             res.status(401).json({message: "User Already exists with the username"})
-        } else {
+        } else if(error){
+            res.status(408).json({message: error[0].message})
+        } 
+        
+        else {
             res.status(200).json({message: "User Registered Succesfully"})
         }
         
